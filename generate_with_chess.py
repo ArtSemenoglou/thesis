@@ -43,7 +43,7 @@ while(i<number_of_games):
         depth_White=10
         depth_Black=6
     
-    best_move_arr = stockfish.get_top_moves(1)
+    best_move_arr = stockfish.get_top_moves(2)
     while(best_move_arr): #while there is a legal move to be made
         if(len(moves)<20):
             if(len(moves)%2==0):
@@ -65,19 +65,38 @@ while(i<number_of_games):
 
         #check if it's stalemate
         if(board.can_claim_threefold_repetition() or board.can_claim_fifty_moves() or board.is_insufficient_material()):
-            best_moves = stockfish.get_top_moves(2) #choose the second best move
-            if(len(best_moves)==2):
-                board.pop()
-                next_move = best_moves[1]["Move"]
-                board.push(chess.Move.from_uci(next_move))
+            #choose the second best move if it is not affecting the three last moves of the game
+
+            if(len(best_move_arr)==2):
+                if ('Mate' in best_move_arr[0].keys()) and ('Mate' in best_move_arr[1].keys()):
+                    if (best_move_arr[0]['Mate'] is not None) and (best_move_arr[1]['Mate'] is not None):
+                        if (abs(best_move_arr[0]['Mate']) <=3) or (abs(best_move_arr[1]['Mate']) <=3) : 
+                            flag = 1
+                            break  
+                    elif (best_move_arr[0]['Mate'] is not None):
+                        if (abs(best_move_arr[0]['Mate']) <=3): 
+                            flag = 1
+                            break  
+                    elif (best_move_arr[1]['Mate'] is not None):
+                        if (abs(best_move_arr[1]['Mate']) <=3): 
+                            flag = 1
+                            break  
+            else:
+                flag = 1
+                break 
+
+            board.pop()
+            next_move = best_move_arr[1]["Move"]
+            board.push(chess.Move.from_uci(next_move))
             if(board.can_claim_threefold_repetition() or board.can_claim_fifty_moves() or board.is_insufficient_material()): #if it's still a stalemate end the game
                 moves.append(next_move)
                 stockfish.make_moves_from_current_position([next_move])
                 flag = 1
                 break
+
         moves.append(next_move)
         stockfish.make_moves_from_current_position([next_move])
-        best_move_arr = stockfish.get_top_moves(1)
+        best_move_arr = stockfish.get_top_moves(2)
 
 #print result of the game and save it. if it's a checkmate save the puzzle too
 
@@ -89,7 +108,7 @@ while(i<number_of_games):
         print("Completed games:", i, "\nNon draw ratio: ", i/total_games * 100,"number of moves",len(moves), "*******************************************\n\n")
         if(board.is_checkmate()):
             #save the game
-            f=open('data_v8/games_v1.txt','a')
+            f=open('data_v9/games_v1.txt','a')
             f.write(",".join(moves))
             if i<number_of_games:
                 f.write("@")

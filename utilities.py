@@ -11,7 +11,7 @@ def get_path():
     return original_path
 
 def get_games(): #load all the games
-    f=open('data_v7/games_v1.txt','r') #file to load the games from
+    f=open('data_v8/games_v1.txt','r') #file to load the games from
     data=f.read()
     f.close()
     data=data.split("@")
@@ -29,15 +29,28 @@ def check_valid_puzzle(game,indexes,fen=False): # check if the moves are the bes
     stockfish.set_elo_rating(3000)
     stockfish.set_depth(10)
     stockfish.update_engine_parameters({"Hash": 25600, "Threads": 10})
+
     if fen:
         stockfish.set_fen_position(fen)
     if indexes[0] > 0:
         stockfish.make_moves_from_current_position(game[:indexes[0]])
+        
     for move in indexes:
         if len(game) > move:
-            if stockfish.get_top_moves(1)[0]['Move'] != game[move]:
+            tempMoveArrDict = stockfish.get_top_moves(10)
+            if tempMoveArrDict[0]['Move'] != game[move]:
                 valid = False
-                break
+                gameMoveDict = None
+                for tempMoveDict in tempMoveArrDict:
+                    if tempMoveDict['Move'] == game[move]:
+                        gameMoveDict = tempMoveDict
+                        break
+                if gameMoveDict:
+                    if ('Mate' in gameMoveDict.keys()) and ('Mate' in tempMoveArrDict[0].keys()):
+                        if gameMoveDict['Mate'] == tempMoveArrDict[0]['Mate']:
+                            valid = True
+                if not valid:
+                    break
             stockfish.make_moves_from_current_position([game[move]])
     return valid
 
