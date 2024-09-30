@@ -11,7 +11,7 @@ stockfish.set_depth(10)
 stockfish.update_engine_parameters({"Hash": 25600, "Threads": 10})
 
 
-def test_necessity(original_fen,moves):
+def test_necessity(original_fen,moves,player_color):
     stockfish.set_fen_position(original_fen)
     for i in range(len(moves)):
         if len(moves[i]) == 5:
@@ -34,7 +34,10 @@ def test_necessity(original_fen,moves):
                     return True
             board = chess.Board(stockfish.get_fen_position())
             if board.is_checkmate():
-                return False
+                if (player_color == "white" and " b" in board.fen()) or (player_color == "black" and " w" in board.fen()):
+                    return False
+                else:
+                    return True
             else:
                 return True
         else:
@@ -43,7 +46,7 @@ def test_necessity(original_fen,moves):
         return False
 
 
-def play_all_possible_games(original_fen):
+def play_all_possible_games(original_fen,player_color):
     alt_games =  []
     stockfish.set_fen_position(original_fen)
 
@@ -52,7 +55,7 @@ def play_all_possible_games(original_fen):
         moves = []
         temp_best_moves_arr = [best_moves_arr[i]]
         stockfish.set_fen_position(original_fen)
-        while(temp_best_moves_arr and len(moves) < 7 ):
+        while(temp_best_moves_arr and len(moves) < 6 ):
             if len(moves) == 5:
                 moves.append("fail")
                 break
@@ -60,7 +63,7 @@ def play_all_possible_games(original_fen):
             stockfish.make_moves_from_current_position([best_move])
             moves.append(best_move)
             temp_best_moves_arr = stockfish.get_top_moves()
-        if len(moves) < 6 and test_necessity(original_fen,moves):
+        if len(moves) < 6 and test_necessity(original_fen,moves,player_color):
             alt_games.append(moves)
     return alt_games
 
@@ -74,7 +77,11 @@ def is_Allumwandlung(fen,game):
         else: 
             if len(move) > 4:
                 possible_promotions = 0
-                alt_games_arr = play_all_possible_games(fen_prev)
+                if " b" in fen_cur:
+                    player_color = "black"
+                else:
+                    player_color = "white"
+                alt_games_arr = play_all_possible_games(fen_prev,player_color)
                 stockfish.set_fen_position(fen_cur)
                 for alt_game in alt_games_arr:     
                     if len(alt_game[1]) == 5:
@@ -145,7 +152,7 @@ def test_custom_game():
     
 
 while(True):
-    choice = input("\n1. Test saved games\n2. Test custom game\n3. Exit\nChoose puzzle category: \n")
+    choice = input("\n1. Test saved games\n2. Test custom game\n3. Exit\nChoose what to test: \n")
     if choice == '1' :
         test_saved_games()
     elif choice == '2':

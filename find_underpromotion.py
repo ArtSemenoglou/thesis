@@ -13,6 +13,10 @@ stockfish.set_depth(10)
 def test_necessity(original_fen,moves):
     stockfish.set_fen_position(original_fen)
     if len(moves[0]) == 5:
+        if " b" in original_fen:
+            player_color = "black"
+        else:
+            player_color = "white"
         new_move = moves[0][:4] + 'q'
         if stockfish.is_move_correct(new_move):
             temp_moves = []
@@ -25,7 +29,10 @@ def test_necessity(original_fen,moves):
                     return True
             board = chess.Board(stockfish.get_fen_position())
             if board.is_checkmate():
-                return False
+                if (player_color == "white" and " b" in board.fen()) or (player_color == "black" and " w" in board.fen()):
+                    return False
+                else:
+                    return True
             else:
                 return True
         else:
