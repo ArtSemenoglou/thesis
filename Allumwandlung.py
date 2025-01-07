@@ -100,7 +100,7 @@ def is_Allumwandlung(fen,game):
 def test_saved_games():
     counter = 0
     counter_saved = 0
-    games_arr = utilities.load_puzzles("data_v7/mate_in_3_final.txt") #load the games
+    games_arr = utilities.load_puzzles("data_final/mate_in_3.txt") #load the games
 
     for game_dict in games_arr: #for each game
 
@@ -110,7 +110,7 @@ def test_saved_games():
         game = game_dict["next_moves"]
         result = is_Allumwandlung(fen,game)
         if result:
-            file_path = 'data_v7/Allumwandlung.txt'
+            file_path = 'data_final/Allumwandlung.txt'
             f=open(file_path,'a')
             f.write(str(result))
             f.close()

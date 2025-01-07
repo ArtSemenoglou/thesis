@@ -78,7 +78,7 @@ for game in games: #for each game
         if utilities.check_valid_puzzle(game,[fork,fork+1,fork+2,fork+3]):#check if the moves were the best possible
             counter_saved = counter_saved + 1
             print("saving fork number:",counter_saved)
-            utilities.register_puzzle(game[:fork],[game[fork],game[fork+1],game[fork+2]],'data_v7/fork_v1.txt')#register the puzzle
+            utilities.register_puzzle(game[:fork],[game[fork],game[fork+1],game[fork+2]],'data_final/fork_v1.txt')#register the puzzle
 
 end=time.time()
 print("Time that elapsed: ",(end - start)/60,"m" )

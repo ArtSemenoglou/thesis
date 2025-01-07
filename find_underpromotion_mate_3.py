@@ -42,7 +42,7 @@ def test_necessity(original_fen,moves):
         return False
 
 
-games_arr = utilities.load_puzzles("data_v7/mate_in_3_final.txt") #load the games
+games_arr = utilities.load_puzzles("data_final/mate_in_3.txt") #load the games
 for game_dict in games_arr: #for each game
 
     original_fen = game_dict["fen"]
@@ -59,9 +59,9 @@ for game_dict in games_arr: #for each game
 
                 if test_necessity(fen,next_moves): # if the outcome is better with the underpromotion save the puzzle
                     if len(next_moves) == 5:
-                        utilities.register_puzzle(game[:i],next_moves,'data_v7/underpromotion_mate_3.txt',game_dict["fen"])
+                        utilities.register_puzzle(game[:i],next_moves,'data_final/underpromotion_mate_3.txt',game_dict["fen"])
                     elif len(next_moves) == 3:
-                        utilities.register_puzzle(game[:i],next_moves,'data_v7/underpromotion_mate_2.txt',game_dict["fen"])
+                        utilities.register_puzzle(game[:i],next_moves,'data_final/underpromotion_mate_2.txt',game_dict["fen"])
                     print('found one')
 end=time.time()
 print('Time that elapsed: ',(end - start),'s' )

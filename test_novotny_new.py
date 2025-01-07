@@ -4,8 +4,8 @@ from stockfish import Stockfish
 import chess
 
 
-stockfish = Stockfish(path="C:/Users/ArtemiosSemenoglou/Desktop/διπλωματική/stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe") #initialize stockfish
-
+original_path = utilities.get_path()
+stockfish = Stockfish(path= original_path + "stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe") #initialize stockfish
 
 def make_alternative_move(sacrifice_move,alternative_move,fen):
     # input: the sacrifice move, the move that was not played by opponent,and the starting fen
@@ -70,19 +70,23 @@ def is_novotny(game,i,board,starting_fen,second_attacker,attacker_color,first_ti
             if square not in second_moves_after:
                 different_squares.append(square)
 
-        #if in the different squares is a piece of the opponent, then with the sacrifice that piece is no longer attacked by the second attacker, and the flag_pinned becomes True
+        #if in the different squares is piece that is pinned the flag_pinned becomes True
         for j in range(len(different_squares)):
-            if (j == 0 or j == len(different_squares)-1):
-                if board.piece_at(different_squares[j]):
-                    if board.piece_at(different_squares[j]).color != attacker_color :
-                        flag_pinned = True 
-            else:
-                if not ((different_squares[j-1] - 1 == different_squares[j]) or (different_squares[j+1] + 1 == different_squares[j]) or (different_squares[j-1] - 9 == different_squares[j]) or (different_squares[j+1] + 9 == different_squares[j])):
-                    if board.piece_at(different_squares[j]):
-                        if board.piece_at(different_squares[j]).color != attacker_color :
-                            flag_pinned = True
+            if board.piece_at(different_squares[j]):
+                temp_fen = board.fen()
+                if attacker_color is chess.BLACK:
+                    player_color = chess.WHITE
+                else:
+                    player_color = chess.BLACK
+                board = chess.Board(starting_fen)
+                if board.is_pinned(player_color,different_squares[j]):
+                    flag_pinned = True
+                    board = chess.Board(temp_fen)
+                    break
+                board = chess.Board(temp_fen)
         
         #if the landing square of the move i+2 was reachable by the second attacker before the sacrifice move and now it's not reachable, or the flag_pinned is True
+
         if ((chess.parse_square(game[i+2][2:4]) in second_moves) and (chess.parse_square(game[i+2][2:4]) not in second_moves_after)) or flag_pinned:
             if first_time:#if the function was called from the main program create an alternative game were the second attacker is capturing the sacrifice square and call the is_novotny again and return the result
                 stockfish.set_fen_position(starting_fen)
@@ -214,13 +218,13 @@ def test_novotny():
                 flag_register = True
         else:# if the game did not finish, check if the side that made the sacrifice was benefited by that move after 3 moves and if so register the puzzle
             flag_register = True
-            # finish_score = utilities.get_score(board.fen())
-            # if novotny_color is chess.WHITE:
-            #     if finish_score > starting_score:
-            #         flag_register = True
-            # else:
-            #     if finish_score < starting_score:
-            #         flag_register = True
+            finish_score = utilities.get_score(board.fen())
+            if novotny_color is chess.WHITE:
+                if finish_score > starting_score:
+                    flag_register = True
+            else:
+                if finish_score < starting_score:
+                    flag_register = True
 
         if flag_register:
             print("It is novotny!\n")

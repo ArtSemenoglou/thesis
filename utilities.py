@@ -11,7 +11,7 @@ def get_path():
     return original_path
 
 def get_games(): #load all the games
-    f=open('data_v8/games_v1.txt','r') #file to load the games from
+    f=open('data_final/games_v1.txt','r') #file to load the games from
     data=f.read()
     f.close()
     data=data.split("@")

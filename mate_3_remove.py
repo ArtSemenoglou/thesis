@@ -4,7 +4,7 @@ import chess
 import time
 import utilities
 
-path_for_puzzles = "data_v7/mate_in_3_final.txt"
+path_for_puzzles = "data_final/mate_in_3.txt"
 original_path = utilities.get_path()
 start=time.time()
 
@@ -47,7 +47,7 @@ for game_dict in games_arr:
                     i = - 1
         i = i+1
     if original_fen != new_fen :
-        utilities.register_puzzle([],next_moves,'data_v7/mate_in_3_removed_v2.txt',new_fen) # register the puzzle
+        utilities.register_puzzle([],next_moves,'data_final/mate_in_3_removed.txt',new_fen) # register the puzzle
     counter = counter + 1
 
 print("Time to finish was "+ str((time.time()-start)/60) + "minutes")

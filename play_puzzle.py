@@ -8,15 +8,15 @@ filepath = ""
 while(filepath == ""):
     choice = input("\n1. Mate in 3 with all the pieces\n2. Mate in 3 with only the necessary pieces\n3. Forks(without mate in 3)\n4. Underpromotion(without mate in 3)\n5. Underpromotion with mate in 2\nChoose puzzle category: \n")
     if choice == '1' :
-        filepath = "data_v7/mate_in_3_final.txt"
+        filepath = "data_final/mate_in_3.txt"
     elif choice == '2' :
-        filepath = "data_v7/mate_in_3_removed_v2.txt"
+        filepath = "data_final/mate_in_3_removed.txt"
     elif choice == '3' :
-        filepath = "data_v7/fork_v1.txt"
+        filepath = "data_final/fork_v1.txt"
     elif choice == '4' :
-        filepath = "data_v7/underpromotion_general.txt"
+        filepath = "data_final/underpromotion_general.txt"
     elif choice == '5' :
-        filepath = "data_v7/underpromotion_mate_2.txt"
+        filepath = "data_final/underpromotion_mate_2.txt"
 
 
     data_arr = utilities.load_puzzles(filepath)
@@ -25,7 +25,8 @@ while(filepath == ""):
         filepath == ""
 
 while(play_again=='y' and (counter<len(data_arr))):
-    stockfish = Stockfish(path="C:/Users/ArtemiosSemenoglou/Desktop/διπλωματική/stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe") #initialize stockfish
+    original_path = utilities.get_path()
+    stockfish = Stockfish(path= original_path + "stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe") #initialize stockfish
     move =0 #moves made in game
     stockfish.set_fen_position(data_arr[counter]["fen"])
     for move in range(len(data_arr[counter]["next_moves"])) :
@@ -37,7 +38,6 @@ while(play_again=='y' and (counter<len(data_arr))):
                 print("Black's turn(Lower case letters)")
             else:
                 print("White's turn(Capital letters)")
-            #print(stockfish.get_board_visual())
             webbrowser.open('https://fen2image.chessvision.ai/'+fen)
             input_move = input('Play:')
             while(input_move != data_arr[counter]["next_moves"][move]):

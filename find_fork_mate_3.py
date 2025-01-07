@@ -8,7 +8,7 @@ start=time.time()
 board = chess.Board()
 counter = 0
 counter_saved = 0
-games_arr = utilities.load_puzzles("data_v7/mate_in_3_final.txt") #load the games
+games_arr = utilities.load_puzzles("data_final/mate_in_3.txt") #load the games
 original_path = utilities.get_path()
 stockfish = Stockfish(path= original_path + "stockfish_15_win_x64_avx2/stockfish_15_x64_avx2.exe") #initialize stockfish
 
@@ -81,7 +81,7 @@ for game_dict in games_arr: #for each game
         if utilities.check_valid_puzzle(game,[fork,fork+1,fork+2,fork+3],game_dict["fen"]):#check if the moves were the best possible
             counter_saved = counter_saved + 1
             print("saving fork number:",counter_saved)
-            utilities.register_puzzle(game[:fork],[game[fork],game[fork+1],game[fork+2]],'data_v7/fork_mate_3.txt')#register the puzzle
+            utilities.register_puzzle(game[:fork],[game[fork],game[fork+1],game[fork+2]],'data_final/fork_mate_3.txt')#register the puzzle
 
 end=time.time()
 print("Time that elapsed: ",(end - start),"s" )

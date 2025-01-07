@@ -4,7 +4,7 @@ import chess
 import time
 import utilities
 
-number_of_games = 1000
+number_of_games = 100
 
 #find the path of the folder
 original_path = utilities.get_path()
@@ -108,7 +108,7 @@ while(i<number_of_games):
         print("Completed games:", i, "\nNon draw ratio: ", i/total_games * 100,"number of moves",len(moves), "*******************************************\n\n")
         if(board.is_checkmate()):
             #save the game
-            f=open('data_v9/games_v1.txt','a')
+            f=open('data_vtemp/games_v1.txt','a')
             f.write(",".join(moves))
             if i<number_of_games:
                 f.write("@")
